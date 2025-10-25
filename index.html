@@ -162,7 +162,7 @@
   </style>
 </head>
 <body>
-  <div id="sidebar">
+  <div id="sidebar" class="collapsed">
     <h2>Vùng nghiên cứu</h2>
     <div id="regionList"></div>
   </div>
@@ -183,6 +183,9 @@
     // --- Sidebar toggle ---
     const sidebar = document.getElementById("sidebar");
     const toggleBtn = document.getElementById("toggleSidebar");
+    sidebar.classList.add("collapsed");
+    toggleBtn.innerHTML = "›";
+    toggleBtn.style.left = "10px";
 
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("collapsed");
