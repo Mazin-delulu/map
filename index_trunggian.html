@@ -4,35 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ nghiên cứu sinh vật biển</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .loading {
-      text-align: center;
-      color: #0d6efd;
-    }
-  </style>
-</head>
-<body>
-  <div class="loading">
-    <h2>Đang tải bản đồ...</h2>
-    <p>Vui lòng chờ giây lát...</p>
-  </div>
-
   <script>
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
-    if (isMobile) {
-      window.location.href = "./index_mobile.html";
-    } else {
-      window.location.href = "./index_pc.html";
-    }
+    // Khi tải trang, kiểm tra thiết bị
+    document.addEventListener("DOMContentLoaded", () => {
+      const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+      if (isMobile) {
+        window.location.href = "index_mobile.html";
+      } else {
+        window.location.href = "index_pc.html";
+      }
+    });
   </script>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding-top:30vh;">
+  <h3>Đang tải bản đồ phù hợp với thiết bị của bạn...</h3>
 </body>
 </html>
