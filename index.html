@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bản đồ nghiên cứu sinh vật biển</title>
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -25,7 +26,7 @@
       z-index: 1;
     }
 
-    /* ===== Sidebar Desktop ===== */
+    /* ===== SIDEBAR PC ===== */
     #sidebar {
       position: fixed;
       top: 0;
@@ -48,7 +49,7 @@
     #toggleSidebar {
       position: fixed;
       top: 20px;
-      left: 10px;
+      left: 280px;
       background: #0d6efd;
       color: white;
       border-radius: 50%;
@@ -84,68 +85,85 @@
       color: #333;
     }
 
-    .popup-title {
-      font-weight: bold;
-      font-size: 14px;
-      color: #1a237e;
+    /* Giữ zoom control nổi lên */
+    .leaflet-control-zoom {
+      position: fixed !important;
+      top: 20px !important;
+      right: 20px !important;
+      z-index: 2000 !important;
     }
 
-    /* ===== Bottom sheet overlay ===== */
-    .overlay {
+    /* ===== POPUP tài liệu góc phải PC ===== */
+    #subPopup {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.3s ease;
-    }
-
-    .bottom-sheet {
-      width: 100%;
-      height: 60%;
-      background: #fff;
-      border-radius: 16px 16px 0 0;
-      box-shadow: 0 -3px 10px rgba(0,0,0,0.3);
-      transform: translateY(100%);
-      transition: transform 0.35s ease;
-      padding: 15px;
+      bottom: 20px;
+      right: 20px;
+      width: 340px;
+      max-height: 300px;
       overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      padding: 10px;
+      display: none;
+      z-index: 3000;
     }
 
-    .overlay.active {
-      display: flex;
-      opacity: 1;
+    /* ===== CHỈ MOBILE MỚI DÙNG POPUP TRƯỢT ===== */
+    @media (max-width: 768px) {
+      #sidebar, #toggleSidebar {
+        display: none !important;
+      }
+
+      #openRegionBtn {
+        display: block !important;
+      }
+
+      .overlay {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .bottom-sheet {
+        width: 100%;
+        height: 60%;
+        background: #fff;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -3px 10px rgba(0,0,0,0.3);
+        transform: translateY(100%);
+        transition: transform 0.35s ease;
+        padding: 15px;
+        overflow-y: auto;
+      }
+
+      .overlay.active { display: flex; }
+      .bottom-sheet.active { transform: translateY(0); }
+
+      .sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .close-btn {
+        border: none;
+        background: none;
+        font-size: 20px;
+        cursor: pointer;
+      }
     }
 
-    .bottom-sheet.active {
-      transform: translateY(0);
-    }
-
-    .sheet-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .sheet-header h2 {
-      font-size: 16px;
-      margin: 0;
-    }
-
-    .close-btn {
-      border: none;
-      background: none;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    /* ===== Nút mở bảng vùng (mobile) ===== */
+    /* Nút mở danh sách vùng trên mobile */
     #openRegionBtn {
       display: none;
       position: fixed;
@@ -162,31 +180,21 @@
       z-index: 1200;
       cursor: pointer;
     }
-
-    /* ===== Mobile layout ===== */
-    @media (max-width: 768px) {
-      #sidebar, #toggleSidebar {
-        display: none;
-      }
-      #openRegionBtn {
-        display: block;
-      }
-    }
-
   </style>
 </head>
 <body>
   <div id="map"></div>
 
-  <!-- Sidebar desktop -->
+  <!-- Sidebar PC -->
   <div id="sidebar">
     <h2>Vùng nghiên cứu</h2>
     <div id="regionList"></div>
   </div>
 
-  <div id="toggleSidebar">›</div>
+  <div id="toggleSidebar">‹</div>
+  <div id="subPopup"></div>
 
-  <!-- Mobile bottom sheet (vùng nghiên cứu) -->
+  <!-- Mobile bottom sheets -->
   <div id="regionOverlay" class="overlay">
     <div class="bottom-sheet" id="regionSheet">
       <div class="sheet-header">
@@ -197,7 +205,6 @@
     </div>
   </div>
 
-  <!-- Mobile bottom sheet (popup tài liệu) -->
   <div id="fileOverlay" class="overlay">
     <div class="bottom-sheet" id="fileSheet">
       <div class="sheet-header">
@@ -209,139 +216,90 @@
     </div>
   </div>
 
-  <!-- Nút mở vùng nghiên cứu -->
   <button id="openRegionBtn">📍 Vùng nghiên cứu</button>
 
   <script>
     const map = L.map("map").setView([16.0471, 108.2068], 6);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18,
-    }).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(map);
 
-    const regionMarkers = {};
-    const mainMarkers = {};
+    const sidebar = document.getElementById("sidebar");
+    const toggleSidebar = document.getElementById("toggleSidebar");
 
-    function createSVGIcon(color = "#0d6efd") {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-        fill="${color}" width="32" height="32">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13
-        c0-3.87-3.13-7-7-7zm0 9.5c-1.38
-        0-2.5-1.12-2.5-2.5s1.12-2.5
-        2.5-2.5 2.5 1.12 2.5 2.5
-        -1.12 2.5-2.5 2.5z"/></svg>`;
-      return L.divIcon({
-        html: svg, className: "custom-marker", iconSize: [32, 32],
-        iconAnchor: [16, 32], popupAnchor: [0, -28]
-      });
+    toggleSidebar.onclick = () => {
+      sidebar.classList.toggle("collapsed");
+      toggleSidebar.innerHTML = sidebar.classList.contains("collapsed") ? "›" : "‹";
+    };
+
+    const subPopup = document.getElementById("subPopup");
+    const regionMarkers = {}, mainMarkers = {};
+
+    function showSubPopup(title, filesHTML) {
+      subPopup.innerHTML = `
+        <div style="display:flex;align-items:center;margin-bottom:8px;">
+          <button id="backBtn" style="background:none;border:none;font-size:18px;cursor:pointer;margin-right:8px;">←</button>
+          <strong>${title}</strong>
+        </div>${filesHTML}`;
+      subPopup.style.display = "block";
+      document.getElementById("backBtn").onclick = () => subPopup.style.display = "none";
     }
 
-    fetch("./data_nghiencuu.json")
-      .then(res => res.json())
-      .then(data => {
-        const regionList = document.getElementById("regionList");
-        const regionListMobile = document.getElementById("regionListMobile");
+    fetch("./data_nghiencuu.json").then(r=>r.json()).then(data=>{
+      const regionList = document.getElementById("regionList");
+      const regionListMobile = document.getElementById("regionListMobile");
+      data.forEach(region=>{
+        const {region:name,year,links,representative,points}=region;
+        const color="#"+Math.floor(Math.random()*16777215).toString(16);
+        const m=L.marker([representative.lat,representative.lon],{icon:createIcon(color)}).addTo(map);
+        mainMarkers[name]=m;
+        const div=document.createElement("div");
+        div.className="region-item";
+        div.innerHTML=`<label><input type="checkbox" data-region="${name}"><strong style="color:${color}">${name}</strong> (${year??"N/A"})</label>`;
+        regionList.appendChild(div);
+        regionListMobile.appendChild(div.cloneNode(true));
 
-        data.forEach(region => {
-          const { region: name, year, links, representative, points } = region;
-          const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
-          const centerMarker = L.marker([representative.lat, representative.lon], {
-            icon: createSVGIcon(color)
-          }).addTo(map);
-          mainMarkers[name] = centerMarker;
+        const markers=(points||[]).map(p=>L.circleMarker([p.lat,p.lon],{
+          radius:5,color,fillColor:color,fillOpacity:.85,weight:1
+        }).bindPopup(`<b>${p.name}</b>`));
+        regionMarkers[name]=markers;
 
-          const divDesktop = document.createElement("div");
-          divDesktop.className = "region-item";
-          divDesktop.innerHTML = `
-            <label><input type="checkbox" data-region="${name}">
-            <strong style="color:${color}">${name}</strong> (${year ?? "N/A"})</label>`;
-          regionList.appendChild(divDesktop);
-
-          const divMobile = divDesktop.cloneNode(true);
-          regionListMobile.appendChild(divMobile);
-
-          const markers = (points || []).map(p =>
-            L.circleMarker([p.lat, p.lon], {
-              radius: 5, color, fillColor: color, fillOpacity: 0.85, weight: 1
-            }).bindPopup(`<b>${p.name}</b>`)
-          );
-          regionMarkers[name] = markers;
-
-          const popupHTML = `
-            <div><div class="popup-title" style="color:${color}">${name}</div>
-            <div>Năm: ${year ?? "Không rõ"}</div>
-            ${links?.map((g,i)=>`<div class='file-group' data-idx='${i}'>📘 ${g.group_name}</div>`).join("")}</div>`;
-          centerMarker.bindPopup(popupHTML);
-
-          centerMarker.on("popupopen", e => {
-            const popup = e.popup.getElement();
-            popup.querySelectorAll(".file-group").forEach(el => {
-              el.onclick = () => showFileSheet(name, links[+el.dataset.idx]);
-            });
+        const popupHTML=`
+          <div><div style="font-weight:bold;color:${color}">${name}</div>
+          ${links?.map((g,i)=>`<div class='file-group' data-i='${i}'>📘 ${g.group_name}</div>`).join("")}</div>`;
+        m.bindPopup(popupHTML);
+        m.on("popupopen",e=>{
+          e.popup.getElement().querySelectorAll(".file-group").forEach(el=>{
+            el.onclick=()=>showSubPopup(g.group_name,links[el.dataset.i].files.map(f=>`<div><a href="${f.url}" target="_blank">${f.name}</a></div>`).join(""));
           });
         });
-
-        // Checkbox toggle
-        regionList.addEventListener("change", handleCheckbox);
-        regionListMobile.addEventListener("change", handleCheckbox);
       });
 
-    function handleCheckbox(e) {
-      const name = e.target.getAttribute("data-region");
-      if (!name) return;
-      const markers = regionMarkers[name] || [];
-      const mainMarker = mainMarkers[name];
-      if (e.target.checked) {
-        markers.forEach(m => m.addTo(map));
-        if (mainMarker) mainMarker.openPopup();
-      } else {
-        markers.forEach(m => map.removeLayer(m));
-        if (mainMarker) mainMarker.closePopup();
-      }
+      regionList.addEventListener("change",toggleMarkers);
+      regionListMobile.addEventListener("change",toggleMarkers);
+    });
+
+    function createIcon(color){
+      const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='${color}' width='32' height='32'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z'/></svg>`;
+      return L.divIcon({html:svg,className:"",iconSize:[32,32],iconAnchor:[16,32]});
     }
 
-    // ===== Mobile bottom sheet logic =====
-    const openRegionBtn = document.getElementById("openRegionBtn");
-    const regionOverlay = document.getElementById("regionOverlay");
-    const regionSheet = document.getElementById("regionSheet");
-    const closeRegion = document.getElementById("closeRegion");
-
-    const fileOverlay = document.getElementById("fileOverlay");
-    const fileSheet = document.getElementById("fileSheet");
-    const fileList = document.getElementById("fileList");
-    const fileSheetTitle = document.getElementById("fileSheetTitle");
-    const backFile = document.getElementById("backFile");
-    const closeFile = document.getElementById("closeFile");
-
-    openRegionBtn.onclick = () => {
-      regionOverlay.classList.add("active");
-      regionSheet.classList.add("active");
-      openRegionBtn.style.display = "none";
-    };
-    closeRegion.onclick = () => closeRegionSheet();
-    regionOverlay.onclick = (e) => {
-      if (e.target === regionOverlay) closeRegionSheet();
-    };
-    function closeRegionSheet() {
-      regionSheet.classList.remove("active");
-      setTimeout(()=>regionOverlay.classList.remove("active"),300);
-      openRegionBtn.style.display = "block";
+    function toggleMarkers(e){
+      const name=e.target.getAttribute("data-region");
+      if(!name)return;
+      const markers=regionMarkers[name]||[],main=mainMarkers[name];
+      if(e.target.checked){markers.forEach(m=>m.addTo(map));main?.openPopup();}
+      else{markers.forEach(m=>map.removeLayer(m));main?.closePopup();}
     }
 
-    function showFileSheet(regionName, group) {
-      fileSheetTitle.textContent = `${regionName} - ${group.group_name}`;
-      fileList.innerHTML = group.files.map(f => `
-        <div style="margin:6px 0;"><a href="${f.url}" target="_blank"
-        style="color:#0d6efd;text-decoration:none;">📎 ${f.name}</a></div>`).join("");
-      fileOverlay.classList.add("active");
-      fileSheet.classList.add("active");
-    }
-    function closeFileSheet() {
-      fileSheet.classList.remove("active");
-      setTimeout(()=>fileOverlay.classList.remove("active"),300);
-    }
-    backFile.onclick = closeFileSheet;
-    closeFile.onclick = closeFileSheet;
-    fileOverlay.onclick = (e) => { if (e.target === fileOverlay) closeFileSheet(); };
+    // Mobile overlay logic
+    const openBtn=document.getElementById("openRegionBtn");
+    const regionOverlay=document.getElementById("regionOverlay");
+    const regionSheet=document.getElementById("regionSheet");
+    const closeRegion=document.getElementById("closeRegion");
+
+    openBtn.onclick=()=>{regionOverlay.classList.add("active");regionSheet.classList.add("active");openBtn.style.display="none";};
+    closeRegion.onclick=()=>closeSheet();
+    regionOverlay.onclick=e=>{if(e.target===regionOverlay)closeSheet();};
+    function closeSheet(){regionSheet.classList.remove("active");setTimeout(()=>regionOverlay.classList.remove("active"),300);openBtn.style.display="block";}
   </script>
 </body>
 </html>
