@@ -300,22 +300,31 @@
         // ✅ fix icon & click
         centerMarker.on("popupopen", e => {
           const popupEl = e.popup.getElement();
-          setTimeout(() => {
-            popupEl.querySelectorAll(".file-group").forEach(groupEl => {
-              groupEl.addEventListener("click", () => {
-                const idx = Number(groupEl.dataset.groupIndex);
-                const group = links[idx];
-                if (!group || !group.files) return;
+          if (!popupEl) return;
+          const groupEls = popupEl.querySelectorAll(".file-group");
+          groupEls.forEach(groupEl => {
+            groupEl.onclick = () => {
+              const idx = Number(groupEl.getAttribute("data-group-index"));
+              const group = links[idx];
+              const filesHTML = (group.files || []).map(f => {
+                const ext = (f.name || "").split('.').pop().toLowerCase();
+                let icon = "📁";
+                if (["doc","docx"].includes(ext)) icon = "📄";
+                else if (["xls","xlsx","csv"].includes(ext)) icon = "📊";
+                else if (["ppt","pptx"].includes(ext)) icon = "📈";
+                else if (["pdf"].includes(ext)) icon = "📕";
+                else if (["zip","rar","7z"].includes(ext)) icon = "🗜️";
+                else if (["jpg","jpeg","png","gif","svg"].includes(ext)) icon = "🖼️";
+                else if (["txt"].includes(ext)) icon = "📝";
+                else if (["mp4","avi","mov","mkv"].includes(ext)) icon = "🎞️";
 
-                const filesHTML = group.files.map(f => {
-                  const ext = (f.name || "").split('.').pop();
-                  return `
-                    <div style="margin:6px 0;">
-                      <a href="${f.url}" target="_blank" style="color:#0d6efd;text-decoration:none;">
-                        ${getFileIcon(ext)} ${f.name}
-                      </a>
-                    </div>
-                  `;
+                return `
+                  <div style="margin:6px 0;line-height:1.3;">
+                    <a href="${f.url}" target="_blank" style="color:#0d6efd;text-decoration:none;">
+                      ${icon} ${f.name}
+                    </a>
+                  </div>
+                `;
                 }).join("");
 
                 showSubPopup(name, group.group_name, filesHTML);
