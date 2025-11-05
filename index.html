@@ -135,13 +135,6 @@
       z-index: 1200 !important;
     }
 
-    /* Cuộn */
-    .leaflet-popup-content {
-      max-height: 300px;
-      overflow-y: auto;
-      padding-right: 6px;
-    }
-
     /* 📱 Mobile optimization */
     @media (max-width: 768px) {
       body, html { overflow: auto; }
@@ -163,10 +156,9 @@
       #map {
         position: relative !important;
         width: 100% !important;
-        height: 65vh !important; /* ✅ map cao hơn để dễ xem */
+        height: 65vh !important;
       }
 
-      /* Popup file hiển thị ở giữa màn */
       #subPopup {
         left: 50% !important;
         bottom: 5% !important;
@@ -176,7 +168,6 @@
         border-radius: 16px !important;
       }
 
-      /* Nút đóng popup */
       #closeSubPopup {
         display: inline-block;
         float: right;
@@ -238,10 +229,22 @@
   const regionMarkers = {};
   const mainMarkers = {};
 
-  // Popup file riêng
   const popupOverlay = document.createElement("div");
   popupOverlay.id = "subPopup";
   document.body.appendChild(popupOverlay);
+
+  function getFileIcon(ext) {
+    ext = ext.toLowerCase();
+    if (["doc", "docx"].includes(ext)) return "📄";
+    if (["xls", "xlsx", "csv"].includes(ext)) return "📊";
+    if (["ppt", "pptx"].includes(ext)) return "📈";
+    if (["pdf"].includes(ext)) return "📕";
+    if (["zip", "rar", "7z"].includes(ext)) return "🗜️";
+    if (["jpg", "jpeg", "png", "gif", "svg"].includes(ext)) return "🖼️";
+    if (["txt"].includes(ext)) return "📝";
+    if (["mp4", "avi", "mov", "mkv"].includes(ext)) return "🎞️";
+    return "📁";
+  }
 
   function showSubPopup(regionName, title, filesHTML) {
     popupOverlay.innerHTML = `
@@ -294,7 +297,7 @@
 
         centerMarker.bindPopup(popupHTML);
 
-        // ✅ fix click lỗi trên mobile
+        // ✅ fix icon & click
         centerMarker.on("popupopen", e => {
           const popupEl = e.popup.getElement();
           setTimeout(() => {
@@ -304,13 +307,16 @@
                 const group = links[idx];
                 if (!group || !group.files) return;
 
-                const filesHTML = group.files.map(f => `
-                  <div style="margin:6px 0;">
-                    <a href="${f.url}" target="_blank" style="color:#0d6efd;text-decoration:none;">
-                      📄 ${f.name}
-                    </a>
-                  </div>
-                `).join("");
+                const filesHTML = group.files.map(f => {
+                  const ext = (f.name || "").split('.').pop();
+                  return `
+                    <div style="margin:6px 0;">
+                      <a href="${f.url}" target="_blank" style="color:#0d6efd;text-decoration:none;">
+                        ${getFileIcon(ext)} ${f.name}
+                      </a>
+                    </div>
+                  `;
+                }).join("");
 
                 showSubPopup(name, group.group_name, filesHTML);
               });
