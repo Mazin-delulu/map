@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bản đồ nghiên cứu sinh vật biển</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đang chuyển hướng...</title>
   <script>
-    // Nhận diện thiết bị
-    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    if (isMobile) {
-      window.location.href = "index_mobile.html";
-    } else {
-      window.location.href = "index.html";
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const ua = navigator.userAgent.toLowerCase();
+      const isMobile = /iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(ua);
+
+      if (isMobile) {
+        // 👉 mở giao diện mobile
+        window.location.href = "index_mobile.html";
+      } else {
+        // 👉 mở giao diện PC
+        window.location.href = "index.html";
+      }
+    });
   </script>
 </head>
-<body>
-  <p>Đang chuyển hướng...</p>
+<body style="font-family:sans-serif; text-align:center; padding:50px;">
+  <h2>Đang tải bản đồ phù hợp với thiết bị...</h2>
+  <p>Nếu không tự động chuyển, <a href="index_pc.html">bấm vào đây</a>.</p>
 </body>
 </html>
-
