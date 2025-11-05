@@ -26,7 +26,7 @@
       z-index: 1;
     }
 
-    /* Sidebar cho PC */
+    /* Sidebar */
     #sidebar {
       position: fixed;
       top: 0;
@@ -47,7 +47,7 @@
       transform: translateX(-100%);
     }
 
-    /* Nút toggle sidebar (PC) */
+    /* Nút toggle */
     #toggleSidebar {
       position: fixed;
       top: 20px;
@@ -96,83 +96,8 @@
       font-size: 14px;
       color: #1a237e;
     }
-
-    /* 📱 Giao diện cho điện thoại */
-    @media (max-width: 768px) {
-      #sidebar {
-        display: none;
-      }
-
-      #toggleSidebar {
-        display: none !important;
-      }
-
-      /* Nút mở danh sách */
-      #mobileButton {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #0d6efd;
-        color: white;
-        padding: 12px 18px;
-        border-radius: 25px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-        font-size: 14px;
-        z-index: 1500;
-        cursor: pointer;
-        border: none;
-      }
-
-      /* Popup vùng nghiên cứu trên mobile */
-      #mobilePopup {
-        position: fixed;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 60%;
-        background: #fff;
-        box-shadow: 0 -2px 15px rgba(0,0,0,0.3);
-        border-radius: 15px 15px 0 0;
-        transition: bottom 0.3s ease;
-        z-index: 2000;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #mobilePopup.active {
-        bottom: 0;
-      }
-
-      #mobilePopupHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        border-bottom: 1px solid #ddd;
-        background: #f8f9fa;
-        border-radius: 15px 15px 0 0;
-      }
-
-      #mobilePopupHeader h2 {
-        font-size: 16px;
-        margin: 0;
-      }
-
-      #mobilePopupHeader button {
-        background: none;
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-      }
-
-      #mobileRegionList {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px 20px;
-      }
-    }
-
-    /* Popup con (tài liệu) */
+    
+    /* Tài liệu */
     .file-group { position: relative; margin-bottom: 6px; }
     .file-group-title {
       background: #eef3ff;
@@ -185,6 +110,25 @@
       transition: background 0.2s;
     }
     .file-group-title:hover { background: #dbe7ff; }
+    .file-list {
+      display: none;
+      list-style: none;
+      margin: 4px 0 0 10px;
+      padding: 6px 8px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      position: absolute;
+      left: 0;
+      top: 30px;
+      z-index: 9999;
+      min-width: 230px;
+    }
+    .file-group.open .file-list { display: block; }
+    .file-list li { margin: 4px 0; }
+    .file-list a { color: #0d6efd; text-decoration: none; }
+    .file-list a:hover { text-decoration: underline; }
 
     .leaflet-control-zoom {
       position: fixed !important;
@@ -192,29 +136,35 @@
       right: 20px !important;
       z-index: 1200 !important;
     }
+    .leaflet-popup-content {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .leaflet-popup-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .leaflet-popup-content::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+    }
+    .leaflet-popup-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .leaflet-popup-content-wrapper {
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      padding: 10px;
+    }
   </style>
 </head>
 <body>
-  <!-- Sidebar cho PC -->
   <div id="sidebar" class="collapsed">
     <h2>Vùng nghiên cứu</h2>
     <div id="regionList"></div>
   </div>
 
   <div id="toggleSidebar">›</div>
-
-  <!-- Nút mở danh sách cho Mobile -->
-  <button id="mobileButton">📋 Danh sách vùng nghiên cứu</button>
-
-  <!-- Popup vùng nghiên cứu (Mobile) -->
-  <div id="mobilePopup">
-    <div id="mobilePopupHeader">
-      <h2>Vùng nghiên cứu</h2>
-      <button id="closeMobilePopup">✖</button>
-    </div>
-    <div id="mobileRegionList"></div>
-  </div>
-
   <div id="map"></div>
 
   <script>
@@ -228,9 +178,6 @@
 
   const sidebar = document.getElementById("sidebar");
   const toggleBtn = document.getElementById("toggleSidebar");
-  const mobileButton = document.getElementById("mobileButton");
-  const mobilePopup = document.getElementById("mobilePopup");
-  const closeMobilePopup = document.getElementById("closeMobilePopup");
 
   toggleBtn.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
@@ -238,14 +185,6 @@
     toggleBtn.innerHTML = isCollapsed ? "›" : "‹";
     toggleBtn.style.left = isCollapsed ? "10px" : "280px";
     map.invalidateSize({ pan: false });
-  });
-
-  mobileButton.addEventListener("click", () => {
-    mobilePopup.classList.add("active");
-  });
-
-  closeMobilePopup.addEventListener("click", () => {
-    mobilePopup.classList.remove("active");
   });
 
   function createSVGIcon(color = "#0d6efd") {
@@ -270,20 +209,117 @@
   const regionMarkers = {};
   const mainMarkers = {};
 
+  // popup con (góc phải)
+  const popupOverlay = document.createElement("div");
+  popupOverlay.id = "subPopup";
+  Object.assign(popupOverlay.style, {
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    width: "340px",
+    maxHeight: "300px",
+    overflowY: "auto",
+    background: "#fff",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
+    padding: "10px",
+    display: "none",
+    zIndex: "99999"
+  });
+  document.body.appendChild(popupOverlay);
+
+  function showSubPopup(regionName, title, filesHTML) {
+    popupOverlay.innerHTML = `
+      <div style="display:flex;align-items:center;margin-bottom:8px;">
+        <button id="backBtn" style="background:none;border:none;font-size:18px;cursor:pointer;margin-right:8px;padding:2px 6px;">←</button>
+        <strong style="font-size:14px">${regionName} — ${title}</strong>
+      </div>
+      <div style="max-height:220px;overflow-y:auto;padding-right:6px;">
+        ${filesHTML}
+      </div>
+    `;
+    popupOverlay.style.display = "block";
+    const back = document.getElementById("backBtn");
+    if (back) back.onclick = () => { popupOverlay.style.display = "none"; };
+  }
+
   fetch("./data_nghiencuu.json")
     .then(res => res.json())
     .then(data => {
       const regionList = document.getElementById("regionList");
-      const mobileRegionList = document.getElementById("mobileRegionList");
 
       data.forEach(region => {
-        const { region: name, year, representative } = region;
+        const { region: name, year, links, representative, points } = region;
         const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
         const centerMarker = L.marker([representative.lat, representative.lon], {
           icon: createSVGIcon(color)
         }).addTo(map);
         mainMarkers[name] = centerMarker;
+
+        let linksHTML = "<div><em>Chưa có link tài liệu</em></div>";
+        if (links && Array.isArray(links) && links.length > 0) {
+          linksHTML = links.map((group, gi) => `
+            <div class="file-group" data-group-index="${gi}" style="margin:6px 0;">
+              <div class="file-group-title" style="cursor:pointer;color:#0d6efd;">📘 ${group.group_name}</div>
+            </div>
+          `).join("");
+        }
+
+        const popupHTML = `
+          <div>
+            <div class="popup-title" style="color:${color}">${name}</div>
+            <div>Năm: ${year ?? "Không rõ"}</div>
+            ${linksHTML}
+          </div>
+        `;
+
+        centerMarker.bindPopup(popupHTML);
+
+        centerMarker.on("popupopen", e => {
+          const popupEl = e.popup.getElement();
+          if (!popupEl) return;
+          const groupEls = popupEl.querySelectorAll(".file-group");
+          groupEls.forEach(groupEl => {
+            groupEl.onclick = () => {
+              const idx = Number(groupEl.getAttribute("data-group-index"));
+              const group = links[idx];
+              const filesHTML = (group.files || []).map(f => {
+                const ext = (f.name || "").split('.').pop().toLowerCase();
+                let icon = "📁";
+                if (["doc","docx"].includes(ext)) icon = "📄";
+                else if (["xls","xlsx","csv"].includes(ext)) icon = "📊";
+                else if (["ppt","pptx"].includes(ext)) icon = "📈";
+                else if (["pdf"].includes(ext)) icon = "📕";
+                else if (["zip","rar","7z"].includes(ext)) icon = "🗜️";
+                else if (["jpg","jpeg","png","gif","svg"].includes(ext)) icon = "🖼️";
+                else if (["txt"].includes(ext)) icon = "📝";
+                else if (["mp4","avi","mov","mkv"].includes(ext)) icon = "🎞️";
+
+                return `
+                  <div style="margin:6px 0;line-height:1.3;">
+                    <a href="${f.url}" target="_blank" style="color:#0d6efd;text-decoration:none;">
+                      ${icon} ${f.name}
+                    </a>
+                  </div>
+                `;
+              }).join("");
+              showSubPopup(name, group.group_name, filesHTML);
+            };
+          });
+        });
+
+        const markers = (points || []).map(p =>
+          L.circleMarker([p.lat, p.lon], {
+            radius: 5,
+            color,
+            fillColor: color,
+            fillOpacity: 0.85,
+            weight: 1
+          }).bindPopup(`<b>${p.name}</b>`)
+        );
+        regionMarkers[name] = markers;
 
         const div = document.createElement("div");
         div.className = "region-item";
@@ -292,13 +328,43 @@
             <input type="checkbox" data-region="${name}">
             <strong style="color:${color}">${name}</strong> (${year ?? "N/A"})
           </label>`;
-
-        const clone = div.cloneNode(true);
         regionList.appendChild(div);
-        mobileRegionList.appendChild(clone);
       });
+
+      // ✅ Checkbox toggle chỉ đóng popup của chính vùng bị bỏ tick
+      regionList.addEventListener("change", e => {
+        const name = e.target.getAttribute("data-region");
+        if (!name) return;
+        const markers = regionMarkers[name] || [];
+        const mainMarker = mainMarkers[name];
+
+        if (e.target.checked) {
+          markers.forEach(m => m.addTo(map));
+          if (mainMarker) {
+            mainMarker.openPopup();
+            map.setView(mainMarker.getLatLng(), 7, { animate: true });
+          }
+        } else {
+          markers.forEach(m => map.removeLayer(m));
+          if (mainMarker) mainMarker.closePopup();
+
+          // ❌ chỉ tắt popup tài liệu nếu nó đang hiển thị đúng vùng này
+          const popupTitle = popupOverlay.querySelector("strong");
+          if (
+            popupOverlay.style.display === "block" &&
+            popupTitle &&
+            popupTitle.textContent.startsWith(name)
+          ) {
+            popupOverlay.style.display = "none";
+          }
+        }
+      });
+
     })
-    .catch(err => console.error("Lỗi khi tải JSON:", err));
+    .catch(err => {
+      console.error("Lỗi khi tải JSON:", err);
+      alert("Không thể tải dữ liệu JSON.");
+    });
 
   setTimeout(() => map.invalidateSize(), 800);
   </script>
