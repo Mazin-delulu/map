@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bản đồ nghiên cứu sinh vật biển (Mobile)</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <style>
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: Arial, sans-serif;
       overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
     }
+
     #map {
       width: 100%;
       height: 100%;
-      z-index: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
-    /* Nút hiển thị danh sách */
-    #openRegions {
+    /* 🔘 Nút mở popup */
+    #openRegionsBtn {
       position: fixed;
       bottom: 20px;
       right: 20px;
@@ -31,179 +35,246 @@
       color: white;
       border: none;
       border-radius: 30px;
-      padding: 12px 20px;
+      padding: 10px 16px;
       font-size: 15px;
       font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
       cursor: pointer;
-      z-index: 9999;
-    }
-    #openRegions:active {
-      transform: scale(0.97);
+      z-index: 1200;
     }
 
-    /* Popup trượt lên */
+    #openRegionsBtn:hover {
+      background: #0b5ed7;
+    }
+
+    /* 🌫️ Nền mờ khi bật popup */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(2px);
+      display: none;
+      z-index: 1100;
+    }
+
+    /* 📋 Popup vùng nghiên cứu */
     #regionPopup {
       position: fixed;
       left: 0;
       bottom: -100%;
       width: 100%;
-      height: 60%;
+      height: 60vh;
       background: white;
       border-radius: 20px 20px 0 0;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-      transition: bottom 0.4s ease;
-      z-index: 9998;
-      padding: 15px;
-      overflow-y: auto;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+      transition: bottom 0.35s ease;
+      z-index: 1201;
+      display: flex;
+      flex-direction: column;
     }
+
     #regionPopup.open {
       bottom: 0;
     }
 
-    /* Header popup */
-    #regionPopup h2 {
-      margin: 0 0 10px;
-      text-align: center;
-      font-size: 18px;
+    #popupHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #popupHeader h2 {
+      font-size: 17px;
+      margin: 0;
       color: #0d6efd;
     }
 
-    #regionList {
-      max-height: 80%;
-      overflow-y: auto;
-    }
-
-    .region-item {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-      font-size: 15px;
-    }
-
-    /* Nút đóng */
     #closePopup {
-      position: absolute;
-      top: 8px;
-      right: 15px;
       background: none;
       border: none;
       font-size: 22px;
       cursor: pointer;
-      color: #444;
+      color: #555;
     }
 
-    /* Popup tài liệu phụ */
-    #docPopup {
+    #regionList {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 15px;
+    }
+
+    .region-item {
+      border-bottom: 1px solid #eee;
+      padding: 8px 0;
+    }
+
+    .region-item label {
+      font-size: 15px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .region-item input {
+      transform: scale(1.2);
+    }
+
+    /* 📂 Popup tài liệu nhỏ */
+    #filePopup {
       position: fixed;
-      left: 0;
-      bottom: -100%;
-      width: 100%;
-      height: 60%;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-height: 50vh;
       background: #fff;
-      border-radius: 20px 20px 0 0;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-      transition: bottom 0.4s ease;
-      z-index: 10000;
-      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1300;
+      padding: 10px;
       overflow-y: auto;
     }
-    #docPopup.open {
-      bottom: 0;
-    }
-    #docPopup h3 {
+
+    #filePopup h3 {
+      font-size: 15px;
+      margin: 5px 0;
       text-align: center;
       color: #0d6efd;
-      margin-top: 0;
+    }
+
+    #filePopup a {
+      display: block;
+      color: #0d6efd;
+      text-decoration: none;
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    #filePopup a:hover {
+      text-decoration: underline;
+    }
+
+    .leaflet-control-zoom {
+      top: 15px !important;
+      right: 15px !important;
     }
   </style>
 </head>
 <body>
-
   <div id="map"></div>
-  <button id="openRegions">📍 Vùng nghiên cứu</button>
+  <button id="openRegionsBtn">📍 Danh sách vùng</button>
 
-  <!-- Popup danh sách vùng -->
+  <div id="overlay"></div>
+
   <div id="regionPopup">
-    <button id="closePopup">✕</button>
-    <h2>Vùng nghiên cứu</h2>
+    <div id="popupHeader">
+      <h2>Vùng nghiên cứu</h2>
+      <button id="closePopup">✕</button>
+    </div>
     <div id="regionList"></div>
   </div>
 
-  <!-- Popup tài liệu -->
-  <div id="docPopup">
-    <button id="closeDoc">✕</button>
-    <h3 id="docTitle">Tài liệu</h3>
-    <div id="docContent"></div>
-  </div>
+  <div id="filePopup"></div>
 
   <script>
     const map = L.map("map").setView([16.0471, 108.2068], 6);
+    map.zoomControl.setPosition("topright");
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
     }).addTo(map);
 
-    const openBtn = document.getElementById("openRegions");
-    const regionPopup = document.getElementById("regionPopup");
+    const overlay = document.getElementById("overlay");
+    const popup = document.getElementById("regionPopup");
+    const openBtn = document.getElementById("openRegionsBtn");
     const closeBtn = document.getElementById("closePopup");
     const regionList = document.getElementById("regionList");
-    const docPopup = document.getElementById("docPopup");
-    const closeDoc = document.getElementById("closeDoc");
-    const docTitle = document.getElementById("docTitle");
-    const docContent = document.getElementById("docContent");
+    const filePopup = document.getElementById("filePopup");
 
-    openBtn.onclick = () => regionPopup.classList.add("open");
-    closeBtn.onclick = () => regionPopup.classList.remove("open");
-    closeDoc.onclick = () => docPopup.classList.remove("open");
+    openBtn.addEventListener("click", () => {
+      popup.classList.add("open");
+      overlay.style.display = "block";
+    });
+    closeBtn.addEventListener("click", hidePopup);
+    overlay.addEventListener("click", hidePopup);
+
+    function hidePopup() {
+      popup.classList.remove("open");
+      overlay.style.display = "none";
+    }
 
     const regionMarkers = {};
+    const mainMarkers = {};
 
     fetch("./data_nghiencuu.json")
       .then(res => res.json())
       .then(data => {
         data.forEach(region => {
-          const { region: name, year, representative, links } = region;
+          const { region: name, year, links, representative, points } = region;
           const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
-          const marker = L.marker([representative.lat, representative.lon], {
+
+          const centerMarker = L.marker([representative.lat, representative.lon], {
             icon: L.divIcon({
-              html: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='${color}' width='28' height='28'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM12 11.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>`,
-              className: "",
+              html: `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='${color}' width='28' height='28'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z'/></svg>`,
+              className: "custom-marker",
               iconSize: [28, 28],
-              iconAnchor: [14, 28]
+              iconAnchor: [14, 28],
+              popupAnchor: [0, -28]
             })
           }).addTo(map);
+          mainMarkers[name] = centerMarker;
 
-          marker.bindPopup(`<b style='color:${color}'>${name}</b><br>Năm: ${year}`);
+          const popupHTML = `<b style="color:${color}">${name}</b><br>Năm: ${year ?? "Không rõ"}`;
+          centerMarker.bindPopup(popupHTML);
 
-          regionMarkers[name] = marker;
+          const markers = (points || []).map(p =>
+            L.circleMarker([p.lat, p.lon], {
+              radius: 4,
+              color,
+              fillColor: color,
+              fillOpacity: 0.8,
+              weight: 1
+            }).bindPopup(`<b>${p.name}</b>`)
+          );
+          regionMarkers[name] = { markers, links, mainMarker: centerMarker, color };
 
           const div = document.createElement("div");
           div.className = "region-item";
-          div.innerHTML = `<input type='checkbox' data-name='${name}'> <strong style='color:${color}'>${name}</strong> (${year ?? "N/A"})`;
+          div.innerHTML = `
+            <label>
+              <span><strong style="color:${color}">${name}</strong> (${year ?? "N/A"})</span>
+              <input type="checkbox" data-region="${name}">
+            </label>`;
           regionList.appendChild(div);
+        });
 
-          div.querySelector("input").addEventListener("change", e => {
-            if (e.target.checked) {
-              marker.openPopup();
-              map.setView(marker.getLatLng(), 8, { animate: true });
+        regionList.addEventListener("change", e => {
+          const name = e.target.getAttribute("data-region");
+          if (!name) return;
+          const { markers, mainMarker, links, color } = regionMarkers[name];
+          if (e.target.checked) {
+            markers.forEach(m => m.addTo(map));
+            mainMarker.openPopup();
+            map.setView(mainMarker.getLatLng(), 7, { animate: true });
 
-              // hiện popup tài liệu
-              if (Array.isArray(links) && links.length > 0) {
-                docTitle.textContent = `${name} - Tài liệu`;
-                docContent.innerHTML = links.map(g => `
-                  <div style='margin-bottom:10px;'>
-                    <strong>${g.group_name}</strong>
-                    <ul style='margin:5px 0 0 10px;padding:0;'>
-                      ${g.files.map(f => `<li><a href='${f.url}' target='_blank' style='color:#0d6efd;text-decoration:none;'>📄 ${f.name}</a></li>`).join("")}
-                    </ul>
-                  </div>
-                `).join("");
-                docPopup.classList.add("open");
-              }
-            } else {
-              marker.closePopup();
-              docPopup.classList.remove("open");
+            if (links && links.length > 0) {
+              const filesHTML = links.map(group => `
+                <h3>${group.group_name}</h3>
+                ${group.files.map(f => `<a href="${f.url}" target="_blank">📄 ${f.name}</a>`).join("")}
+              `).join("");
+              filePopup.innerHTML = filesHTML;
+              filePopup.style.display = "block";
             }
-          });
+          } else {
+            markers.forEach(m => map.removeLayer(m));
+            mainMarker.closePopup();
+            filePopup.style.display = "none";
+          }
         });
       });
   </script>
