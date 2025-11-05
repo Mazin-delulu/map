@@ -5,18 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ nghiên cứu sinh vật biển</title>
   <script>
-    // Khi tải trang, kiểm tra thiết bị
-    document.addEventListener("DOMContentLoaded", () => {
-      const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-      if (isMobile) {
-        window.location.href = "index_mobile.html";
-      } else {
-        window.location.href = "index_pc.html";
-      }
-    });
+    // Nhận diện thiết bị
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = "index_mobile.html";
+    } else {
+      window.location.href = "index_pc.html";
+    }
   </script>
 </head>
-<body style="font-family:sans-serif;text-align:center;padding-top:30vh;">
-  <h3>Đang tải bản đồ phù hợp với thiết bị của bạn...</h3>
+<body>
+  <p>Đang chuyển hướng...</p>
 </body>
 </html>
