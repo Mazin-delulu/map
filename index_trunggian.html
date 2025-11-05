@@ -9,18 +9,21 @@
       const ua = navigator.userAgent.toLowerCase();
       const isMobile = /iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(ua);
 
-      if (isMobile) {
-        // 👉 mở giao diện mobile
-        window.location.href = "index_mobile.html";
-      } else {
-        // 👉 mở giao diện PC
-        window.location.href = "index.html";
+      try {
+        // Dùng replace để không thêm vào lịch sử trình duyệt
+        window.location.replace(isMobile ? "index_mobile.html" : "index.html");
+      } catch (err) {
+        console.error("Chuyển hướng lỗi:", err);
+        // Fallback nếu bị chặn redirect
+        setTimeout(() => {
+          window.location.href = isMobile ? "index_mobile.html" : "index.html";
+        }, 800);
       }
     });
   </script>
 </head>
 <body style="font-family:sans-serif; text-align:center; padding:50px;">
   <h2>Đang tải bản đồ phù hợp với thiết bị...</h2>
-  <p>Nếu không tự động chuyển, <a href="index_pc.html">bấm vào đây</a>.</p>
+  <p>Nếu không tự động chuyển, <a href="index.html">bấm vào đây</a>.</p>
 </body>
 </html>
