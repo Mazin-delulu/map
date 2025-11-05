@@ -26,7 +26,7 @@
       z-index: 1;
     }
 
-    /* Sidebar */
+    /* Sidebar (PC) */
     #sidebar {
       position: fixed;
       top: 0;
@@ -96,8 +96,8 @@
       font-size: 14px;
       color: #1a237e;
     }
-    
-    /* Tài liệu */
+
+    /* ==== File group ==== */
     .file-group { position: relative; margin-bottom: 6px; }
     .file-group-title {
       background: #eef3ff;
@@ -110,25 +110,23 @@
       transition: background 0.2s;
     }
     .file-group-title:hover { background: #dbe7ff; }
-    .file-list {
-      display: none;
-      list-style: none;
-      margin: 4px 0 0 10px;
-      padding: 6px 8px;
-      background: #ffffff;
+
+    /* Popup phụ */
+    #subPopup {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 340px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: #fff;
       border: 1px solid #ddd;
-      border-radius: 6px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-      position: absolute;
-      left: 0;
-      top: 30px;
-      z-index: 9999;
-      min-width: 230px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      padding: 10px;
+      display: none;
+      z-index: 99999;
     }
-    .file-group.open .file-list { display: block; }
-    .file-list li { margin: 4px 0; }
-    .file-list a { color: #0d6efd; text-decoration: none; }
-    .file-list a:hover { text-decoration: underline; }
 
     .leaflet-control-zoom {
       position: fixed !important;
@@ -136,26 +134,15 @@
       right: 20px !important;
       z-index: 1200 !important;
     }
+
+    /* Cuộn */
     .leaflet-popup-content {
       max-height: 300px;
       overflow-y: auto;
       padding-right: 6px;
     }
-    .leaflet-popup-content::-webkit-scrollbar {
-      width: 6px;
-    }
-    .leaflet-popup-content::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 3px;
-    }
-    .leaflet-popup-content::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 0, 0, 0.3);
-    }
-    .leaflet-popup-content-wrapper {
-      border-radius: 10px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-      padding: 10px;
-    }
+
+    /* 📱 Mobile optimization */
     @media (max-width: 768px) {
       body, html { overflow: auto; }
 
@@ -163,7 +150,7 @@
         position: relative !important;
         width: 100% !important;
         height: auto !important;
-        max-height: 40vh;
+        max-height: 35vh !important;
         transform: none !important;
         border-right: none;
         border-bottom: 1px solid #ccc;
@@ -176,46 +163,27 @@
       #map {
         position: relative !important;
         width: 100% !important;
-        height: 80vh !important; /* ✅ tăng chiều cao bản đồ */
+        height: 65vh !important; /* ✅ map cao hơn để dễ xem */
       }
 
-      /* Popup link nhỏ gọn, hiển thị chồng lên */
+      /* Popup file hiển thị ở giữa màn */
       #subPopup {
-        position: fixed !important;
         left: 50% !important;
-        bottom: 10px !important;
+        bottom: 5% !important;
         transform: translateX(-50%) !important;
         width: 90% !important;
-        max-height: 45vh !important;
-        border-radius: 14px !important;
-        overflow-y: auto !important;
-        z-index: 9999 !important;
+        max-height: 60vh !important;
+        border-radius: 16px !important;
       }
 
-      /* Nền mờ khi popup mở */
-      body::after {
-        content: "";
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.4);
-        z-index: 9998;
+      /* Nút đóng popup */
+      #closeSubPopup {
+        display: inline-block;
+        float: right;
+        font-size: 22px;
+        color: #444;
+        cursor: pointer;
       }
-
-      body.popup-open::after { display: block; }
-    }
-
-    /* Cuộn và popup đẹp hơn */
-    .leaflet-popup-content {
-      max-height: 300px;
-      overflow-y: auto;
-      padding-right: 6px;
-    }
-
-    .leaflet-popup-content::-webkit-scrollbar { width: 6px; }
-    .leaflet-popup-content::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 3px;
     }
   </style>
 </head>
@@ -270,39 +238,27 @@
   const regionMarkers = {};
   const mainMarkers = {};
 
-  // popup con (góc phải)
+  // Popup file riêng
   const popupOverlay = document.createElement("div");
   popupOverlay.id = "subPopup";
-  Object.assign(popupOverlay.style, {
-    position: "fixed",
-    bottom: "20px",
-    right: "20px",
-    width: "340px",
-    maxHeight: "300px",
-    overflowY: "auto",
-    background: "#fff",
-    border: "1px solid #ddd",
-    borderRadius: "10px",
-    boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
-    padding: "10px",
-    display: "none",
-    zIndex: "99999"
-  });
   document.body.appendChild(popupOverlay);
 
   function showSubPopup(regionName, title, filesHTML) {
     popupOverlay.innerHTML = `
-      <div style="display:flex;align-items:center;margin-bottom:8px;">
-        <button id="backBtn" style="background:none;border:none;font-size:18px;cursor:pointer;margin-right:8px;padding:2px 6px;">←</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
         <strong style="font-size:14px">${regionName} — ${title}</strong>
+        <span id="closeSubPopup">&times;</span>
       </div>
       <div style="max-height:220px;overflow-y:auto;padding-right:6px;">
         ${filesHTML}
       </div>
     `;
     popupOverlay.style.display = "block";
-    const back = document.getElementById("backBtn");
-    if (back) back.onclick = () => { popupOverlay.style.display = "none"; };
+    document.body.classList.add("popup-open");
+    document.getElementById("closeSubPopup").onclick = () => {
+      popupOverlay.style.display = "none";
+      document.body.classList.remove("popup-open");
+    };
   }
 
   fetch("./data_nghiencuu.json")
@@ -322,8 +278,8 @@
         let linksHTML = "<div><em>Chưa có link tài liệu</em></div>";
         if (links && Array.isArray(links) && links.length > 0) {
           linksHTML = links.map((group, gi) => `
-            <div class="file-group" data-group-index="${gi}" style="margin:6px 0;">
-              <div class="file-group-title" style="cursor:pointer;color:#0d6efd;">📘 ${group.group_name}</div>
+            <div class="file-group" data-group-index="${gi}">
+              <div class="file-group-title">📘 ${group.group_name}</div>
             </div>
           `).join("");
         }
@@ -338,37 +294,28 @@
 
         centerMarker.bindPopup(popupHTML);
 
+        // ✅ fix click lỗi trên mobile
         centerMarker.on("popupopen", e => {
           const popupEl = e.popup.getElement();
-          if (!popupEl) return;
-          const groupEls = popupEl.querySelectorAll(".file-group");
-          groupEls.forEach(groupEl => {
-            groupEl.onclick = () => {
-              const idx = Number(groupEl.getAttribute("data-group-index"));
-              const group = links[idx];
-              const filesHTML = (group.files || []).map(f => {
-                const ext = (f.name || "").split('.').pop().toLowerCase();
-                let icon = "📁";
-                if (["doc","docx"].includes(ext)) icon = "📄";
-                else if (["xls","xlsx","csv"].includes(ext)) icon = "📊";
-                else if (["ppt","pptx"].includes(ext)) icon = "📈";
-                else if (["pdf"].includes(ext)) icon = "📕";
-                else if (["zip","rar","7z"].includes(ext)) icon = "🗜️";
-                else if (["jpg","jpeg","png","gif","svg"].includes(ext)) icon = "🖼️";
-                else if (["txt"].includes(ext)) icon = "📝";
-                else if (["mp4","avi","mov","mkv"].includes(ext)) icon = "🎞️";
+          setTimeout(() => {
+            popupEl.querySelectorAll(".file-group").forEach(groupEl => {
+              groupEl.addEventListener("click", () => {
+                const idx = Number(groupEl.dataset.groupIndex);
+                const group = links[idx];
+                if (!group || !group.files) return;
 
-                return `
-                  <div style="margin:6px 0;line-height:1.3;">
+                const filesHTML = group.files.map(f => `
+                  <div style="margin:6px 0;">
                     <a href="${f.url}" target="_blank" style="color:#0d6efd;text-decoration:none;">
-                      ${icon} ${f.name}
+                      📄 ${f.name}
                     </a>
                   </div>
-                `;
-              }).join("");
-              showSubPopup(name, group.group_name, filesHTML);
-            };
-          });
+                `).join("");
+
+                showSubPopup(name, group.group_name, filesHTML);
+              });
+            });
+          }, 80);
         });
 
         const markers = (points || []).map(p =>
@@ -392,10 +339,9 @@
         regionList.appendChild(div);
       });
 
-      // ✅ Checkbox toggle chỉ đóng popup của chính vùng bị bỏ tick
+      // Chỉ tắt popup tài liệu nếu đúng vùng đó
       regionList.addEventListener("change", e => {
-        const name = e.target.getAttribute("data-region");
-        if (!name) return;
+        const name = e.target.dataset.region;
         const markers = regionMarkers[name] || [];
         const mainMarker = mainMarkers[name];
 
@@ -403,13 +349,12 @@
           markers.forEach(m => m.addTo(map));
           if (mainMarker) {
             mainMarker.openPopup();
-            map.setView(mainMarker.getLatLng(), 7, { animate: true });
+            map.setView(mainMarker.getLatLng(), 7);
           }
         } else {
           markers.forEach(m => map.removeLayer(m));
           if (mainMarker) mainMarker.closePopup();
 
-          // ❌ chỉ tắt popup tài liệu nếu nó đang hiển thị đúng vùng này
           const popupTitle = popupOverlay.querySelector("strong");
           if (
             popupOverlay.style.display === "block" &&
@@ -417,15 +362,12 @@
             popupTitle.textContent.startsWith(name)
           ) {
             popupOverlay.style.display = "none";
+            document.body.classList.remove("popup-open");
           }
         }
       });
-
     })
-    .catch(err => {
-      console.error("Lỗi khi tải JSON:", err);
-      alert("Không thể tải dữ liệu JSON.");
-    });
+    .catch(err => console.error("Lỗi khi tải JSON:", err));
 
   setTimeout(() => map.invalidateSize(), 800);
   </script>
