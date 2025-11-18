@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tài liệu nghiên cứu (Mobile)</title>
+
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f1f3f5;
+    }
+
+    h2 {
+        text-align: center;
+        padding: 15px 0;
+        background: white;
+        margin: 0;
+        font-size: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* Danh sách vùng */
+    .region-item {
+        background: white;
+        margin: 10px;
+        padding: 14px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .region-item:hover {
+        background: #eef4ff;
+    }
+
+    /* Popup tài liệu (Mobile) */
+    #mobilePopup {
+        position: fixed;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 70%;
+        background: white;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 18px rgba(0,0,0,0.25);
+        transition: bottom 0.35s ease;
+        padding: 15px;
+        z-index: 9999;
+        overflow-y: auto;
+    }
+
+    #popupHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    #popupClose {
+        font-size: 26px;
+        cursor: pointer;
+        padding: 4px 10px;
+    }
+
+    .file-group {
+        margin: 15px 0 8px;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+
+    .file-link {
+        display: block;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        color: #0d6efd;
+        text-decoration: none;
+        font-size: 15px;
+    }
+
+    .file-link:last-child {
+        border-bottom: none;
+    }
+</style>
+</head>
+
+<body>
+<h2>Danh sách vùng nghiên cứu</h2>
+
+<div id="regionList"></div>
+
+<!-- Popup mobile -->
+<div id="mobilePopup">
+    <div id="popupHeader">
+        <span id="popupTitle">Tài liệu</span>
+        <span id="popupClose">&times;</span>
+    </div>
+    <div id="popupContent"></div>
+</div>
+
+<script>
+function getFileIcon(ext) {
+    ext = ext.toLowerCase();
+    if (["doc", "docx"].includes(ext)) return "📄";
+    if (["xls", "xlsx", "csv"].includes(ext)) return "📊";
+    if (["ppt", "pptx"].includes(ext)) return "📈";
+    if (["pdf"].includes(ext)) return "📕";
+    if (["zip", "rar", "7z"].includes(ext)) return "🗜️";
+    if (["jpg", "jpeg", "png", "gif", "svg"].includes(ext)) return "🖼️";
+    if (["txt"].includes(ext)) return "📝";
+    if (["mp4", "avi", "mov", "mkv"].includes(ext)) return "🎞️";
+    return "📁";
+}
+
+const popup = document.getElementById("mobilePopup");
+const popupTitle = document.getElementById("popupTitle");
+const popupContent = document.getElementById("popupContent");
+
+document.getElementById("popupClose").onclick = () => {
+    popup.style.bottom = "-100%";
+};
+
+fetch("./data_nghiencuu.json")
+    .then(res => res.json())
+    .then(data => {
+        const regionList = document.getElementById("regionList");
+
+        data.forEach(region => {
+            const div = document.createElement("div");
+            div.className = "region-item";
+            div.textContent = `${region.region} (${region.year})`;
+
+            div.onclick = () => {
+                popupTitle.textContent = region.region;
+                popupContent.innerHTML = "";
+
+                if (!region.links || region.links.length === 0) {
+                    popupContent.innerHTML = "<em>Không có tài liệu</em>";
+                } else {
+                    region.links.forEach(group => {
+                        popupContent.innerHTML += `<div class="file-group">📘 ${group.group_name}</div>`;
+
+                        (group.files || []).forEach(file => {
+                            const ext = file.name.split(".").pop();
+                            popupContent.innerHTML += `
+                                <a class="file-link" href="${file.url}" target="_blank">
+                                    ${getFileIcon(ext)} ${file.name}
+                                </a>
+                            `;
+                        });
+                    });
+                }
+
+                popup.style.bottom = "0";
+            };
+
+            regionList.appendChild(div);
+        });
+    })
+    .catch(err => {
+        alert("Lỗi tải dữ liệu JSON");
+        console.error(err);
+    });
+</script>
+
+</body>
+</html>
