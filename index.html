@@ -244,10 +244,12 @@
     if (back) back.onclick = () => { popupOverlay.style.display = "none"; };
   }
 
-  fetch("./data_nghiencuu.json")
-    .then(res => res.json())
-    .then(data => {
-      const regionList = document.getElementById("regionList");
+Promise.all([
+  fetch("data_nghiencuu.json").then(r => r.json()),
+  fetch("data_nghiencuu_new.json").then(r => r.json())
+]).then(([oldData, newData]) => {
+  const data = [...oldData, ...newData];
+  initMap(data);
 
       data.forEach(region => {
         const { region: name, year, links, representative, points } = region;
