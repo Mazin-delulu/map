@@ -249,7 +249,6 @@ Promise.all([
   fetch("data_nghiencuu_new.json").then(r => r.json())
 ])
 .then(([oldData, newData]) => {
-
   const data = [
     ...(Array.isArray(oldData) ? oldData : []),
     ...(Array.isArray(newData) ? newData : [])
@@ -257,9 +256,81 @@ Promise.all([
 
   console.log("📌 Tổng số vùng tải được:", data.length);
 
-  // 👉 Mọi phần xử lý dữ liệu của bạn nằm dưới đây là hợp lý và giữ nguyên
   data.forEach(region => {
-    // ... toàn bộ code hiện tại như bạn gửi ...
+    const { region: name, year, links, representative, points } = region;
+    const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+    const centerMarker = L.marker([representative.lat, representative.lon], {
+      icon: createSVGIcon(color)
+    }).addTo(map);
+    mainMarkers[name] = centerMarker;
+
+    let linksHTML = "<div><em>Chưa có link tài liệu</em></div>";
+    if (Array.isArray(links) && links.length > 0) {
+      linksHTML = links.map((group, gi) => `
+        <div class="file-group" data-group-index="${gi}">
+          <div class="file-group-title">📘 ${group.group_name}</div>
+        </div>
+      `).join("");
+    }
+
+    const popupHTML = `
+      <div>
+        <div class="popup-title" style="color:${color}">${name}</div>
+        <div>Năm: ${year ?? "Không rõ"}</div>
+        ${linksHTML}
+      </div>
+    `;
+    centerMarker.bindPopup(popupHTML);
+
+    centerMarker.on("popupopen", e => {
+      const popupEl = e.popup.getElement();
+      const groupEls = popupEl?.querySelectorAll(".file-group") || [];
+      groupEls.forEach(groupEl => {
+        groupEl.onclick = () => {
+          const idx = Number(groupEl.dataset.groupIndex);
+          const group = links[idx];
+          const filesHTML = group.files.map(f => `
+            <div><a href="${f.url}" target="_blank">📄 ${f.name}</a></div>
+          `).join("");
+          showSubPopup(name, group.group_name, filesHTML);
+        };
+      });
+    });
+
+    regionMarkers[name] = (points || []).map(p =>
+      L.circleMarker([p.lat, p.lon], {
+        radius: 5,
+        color,
+        fillColor: color,
+        fillOpacity: 0.85
+      }).bindPopup(`<b>${p.name}</b>`)
+    );
+
+    const div = document.createElement("div");
+    div.className = "region-item";
+    div.innerHTML = `
+      <label>
+        <input type="checkbox" data-region="${name}">
+        <strong style="color:${color}">${name}</strong> (${year ?? "N/A"})
+      </label>`;
+    regionList.appendChild(div);
+  });
+
+  regionList.addEventListener("change", e => {
+    const name = e.target.dataset.region;
+    if (!name) return;
+    const markers = regionMarkers[name] || [];
+    const mainMarker = mainMarkers[name];
+
+    if (e.target.checked) {
+      markers.forEach(m => m.addTo(map));
+      mainMarker?.openPopup();
+    } else {
+      markers.forEach(m => map.removeLayer(m));
+      mainMarker?.closePopup();
+      popupOverlay.style.display = "none";
+    }
   });
 
 })
@@ -267,6 +338,7 @@ Promise.all([
   console.error("❌ Lỗi tải JSON:", err);
   alert("Không thể tải dữ liệu JSON.");
 });
+
 
 
       data.forEach(region => {
