@@ -249,7 +249,6 @@ Promise.all([
   fetch("data_nghiencuu_new.json").then(r => r.json())
 ]).then(([oldData, newData]) => {
   const data = [...oldData, ...newData];
-  initMap(data);
 
       data.forEach(region => {
         const { region: name, year, links, representative, points } = region;
