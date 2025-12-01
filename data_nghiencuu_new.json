@@ -2,7 +2,7 @@
   {
     "region": "Hòn mê",
     "id_region": "hon_me",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 19.3530555555555,
       "lon": 105.917777777777
@@ -18,7 +18,7 @@
   {
     "region": "Ven biển Hà Tĩnh",
     "id_region": "ha_tinh",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 18.2313888888888,
       "lon": 106.232222222222
@@ -34,7 +34,7 @@
   {
     "region": "Hòn La - Hòn Gió - Bắc Quảng Bình",
     "id_region": "quang_binh",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 17.9238888888888,
       "lon": 106.529166666666
@@ -50,7 +50,7 @@
   {
     "region": "Ngư Thủy - Quảng Bình",
     "id_region": "quang_binh2",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 17.2266666666666,
       "lon": 106.9125
@@ -66,7 +66,7 @@
   {
     "region": "Ven biển Quảng Trị",
     "id_region": "quang_tri",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 16.9605555555555,
       "lon": 107.154722222222
@@ -82,7 +82,7 @@
   {
     "region": "Chân Mây - Lăng Cô",
     "id_region": "lang_co",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 16.3211111111111,
       "lon": 107.984444444444
@@ -103,7 +103,7 @@
   {
     "region": "Cửa sông Thu Bồn",
     "id_region": "thu_bon",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 15.8897222222222,
       "lon": 108.3925
@@ -124,7 +124,7 @@
   {
     "region": "Cù Lao Chàm",
     "id_region": "cham",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 15.9480555555555,
       "lon": 108.493055555555
@@ -198,7 +198,7 @@
   {
     "region": "Hòn Cau",
     "id_region": "hon_cau",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 11.2297222222222,
       "lon": 108.826111111111
@@ -214,7 +214,7 @@
   {
     "region": "Phú Quý",
     "id_region": "phu_quy",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 10.5366666666666,
       "lon": 108.963333333333
@@ -230,7 +230,7 @@
   {
     "region": "Côn Đảo",
     "id_region": "con_dao",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 8.66777777777777,
       "lon": 106.629722222222
@@ -246,7 +246,7 @@
   {
     "region": "Hòn Khoai",
     "id_region": "hon_khoai",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 8.41666666666666,
       "lon": 104.837777777777
@@ -262,7 +262,7 @@
   {
     "region": "Hòn Chuối",
     "id_region": "hon_chuoi",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 8.95277777777777,
       "lon": 104.527222222222
@@ -278,7 +278,7 @@
   {
     "region": "Nam Yết",
     "id_region": "nam_yet",
-    "year": NaN,
+    "year": null,
     "representative": {
       "lat": 10.1783333333333,
       "lon": 114.363888888888
@@ -291,4 +291,5 @@
     ],
     "points": []
   }
+
 ]
