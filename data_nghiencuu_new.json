@@ -1,0 +1,294 @@
+[
+  {
+    "region": "Hòn mê",
+    "id_region": "hon_me",
+    "year": NaN,
+    "representative": {
+      "lat": 19.3530555555555,
+      "lon": 105.917777777777
+    },
+    "links": [
+      {
+        "group_name": "Hòn Mê",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Ven biển Hà Tĩnh",
+    "id_region": "ha_tinh",
+    "year": NaN,
+    "representative": {
+      "lat": 18.2313888888888,
+      "lon": 106.232222222222
+    },
+    "links": [
+      {
+        "group_name": "Hà Tĩnh",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Hòn La - Hòn Gió - Bắc Quảng Bình",
+    "id_region": "quang_binh",
+    "year": NaN,
+    "representative": {
+      "lat": 17.9238888888888,
+      "lon": 106.529166666666
+    },
+    "links": [
+      {
+        "group_name": "Quảng Bình",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Ngư Thủy - Quảng Bình",
+    "id_region": "quang_binh2",
+    "year": NaN,
+    "representative": {
+      "lat": 17.2266666666666,
+      "lon": 106.9125
+    },
+    "links": [
+      {
+        "group_name": "Quảng Bình 2",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Ven biển Quảng Trị",
+    "id_region": "quang_tri",
+    "year": NaN,
+    "representative": {
+      "lat": 16.9605555555555,
+      "lon": 107.154722222222
+    },
+    "links": [
+      {
+        "group_name": "Quảng Trị",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Chân Mây - Lăng Cô",
+    "id_region": "lang_co",
+    "year": NaN,
+    "representative": {
+      "lat": 16.3211111111111,
+      "lon": 107.984444444444
+    },
+    "links": [
+      {
+        "group_name": "Lăng Cô",
+        "files": [
+          {
+            "name": "KHU VUC VỊNH CHAN MAY - LANG CO.doc",
+            "url": ""
+          }
+        ]
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Cửa sông Thu Bồn",
+    "id_region": "thu_bon",
+    "year": NaN,
+    "representative": {
+      "lat": 15.8897222222222,
+      "lon": 108.3925
+    },
+    "links": [
+      {
+        "group_name": "Thu Bồn",
+        "files": [
+          {
+            "name": "KHU VUC CS-THU BON.doc",
+            "url": ""
+          }
+        ]
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Cù Lao Chàm",
+    "id_region": "cham",
+    "year": NaN,
+    "representative": {
+      "lat": 15.9480555555555,
+      "lon": 108.493055555555
+    },
+    "links": [
+      {
+        "group_name": "Chàm",
+        "files": [
+          {
+            "name": "KHU VUC CU LAO CHAM.doc",
+            "url": ""
+          }
+        ]
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Lý Sơn",
+    "id_region": "ly_son",
+    "year": 2010.0,
+    "representative": {
+      "lat": 15.3883333333333,
+      "lon": 109.087222222222
+    },
+    "links": [
+      {
+        "group_name": "Lý Sơn",
+        "files": [
+          {
+            "name": "2010.12_ Chất lượng nước WQI mùa mưa ở đảo Lý Sơn .xls",
+            "url": ""
+          },
+          {
+            "name": "2010.12_ Mô tả hiện trạng các vị trí thu mẫu ở đảo Lý Sơn.doc",
+            "url": ""
+          },
+          {
+            "name": "2010.12_Dữ liệu hóa lý ở đảo Lý Sơn.xlsx",
+            "url": ""
+          },
+          {
+            "name": "2011_ Thu thập thông tin về các loài quý hiếm, mùa vụ, sản lượng khai thác ở đảo Lý Sơn.xls",
+            "url": ""
+          },
+          {
+            "name": "2011.04_ Chất lượng nước WQI mùa khô ở đảo Lý Sơn.xls",
+            "url": ""
+          },
+          {
+            "name": "2011.04_Dữ liệu hóa lý ở đảo Lý Sơn.xlsx",
+            "url": ""
+          },
+          {
+            "name": "2011.04_Dữ liệu trầm tích ở đảo Lý Sơn.xlsx",
+            "url": ""
+          },
+          {
+            "name": "2010.12_Tọa độ thu mẫu nước ở đảo Lý Sơn.doc",
+            "url": ""
+          },
+          {
+            "name": "12_SAN_HÔ.doc",
+            "url": ""
+          }
+        ]
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Hòn Cau",
+    "id_region": "hon_cau",
+    "year": NaN,
+    "representative": {
+      "lat": 11.2297222222222,
+      "lon": 108.826111111111
+    },
+    "links": [
+      {
+        "group_name": "Hòn Cau",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Phú Quý",
+    "id_region": "phu_quy",
+    "year": NaN,
+    "representative": {
+      "lat": 10.5366666666666,
+      "lon": 108.963333333333
+    },
+    "links": [
+      {
+        "group_name": "Phú Quý",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Côn Đảo",
+    "id_region": "con_dao",
+    "year": NaN,
+    "representative": {
+      "lat": 8.66777777777777,
+      "lon": 106.629722222222
+    },
+    "links": [
+      {
+        "group_name": "Côn Đảo",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Hòn Khoai",
+    "id_region": "hon_khoai",
+    "year": NaN,
+    "representative": {
+      "lat": 8.41666666666666,
+      "lon": 104.837777777777
+    },
+    "links": [
+      {
+        "group_name": "Hòn Khoai",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Hòn Chuối",
+    "id_region": "hon_chuoi",
+    "year": NaN,
+    "representative": {
+      "lat": 8.95277777777777,
+      "lon": 104.527222222222
+    },
+    "links": [
+      {
+        "group_name": "Hòn Chuối",
+        "files": []
+      }
+    ],
+    "points": []
+  },
+  {
+    "region": "Nam Yết",
+    "id_region": "nam_yet",
+    "year": NaN,
+    "representative": {
+      "lat": 10.1783333333333,
+      "lon": 114.363888888888
+    },
+    "links": [
+      {
+        "group_name": "Nam Yết",
+        "files": []
+      }
+    ],
+    "points": []
+  }
+]
