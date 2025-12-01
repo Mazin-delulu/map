@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "dulie.xlsx"
-      - "excel_to_json.py"
-      - ".github/workflows/build.yml"
+      - "filechuyen.py"
+      - "build.yml"
 
 jobs:
   build:
