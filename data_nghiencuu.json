@@ -297,11 +297,25 @@
       "lat": 12.50515,
       "lon": 109.266361
     },
+    "links": [
+      {
+        "group_name": "Nam Vân Phong",
+        "files": [
+          { "name": "KHU VUC VINH VAN PHONG.doc", "url": "https://docs.google.com/document/d/1B8lj0cp6iD_jJU2C9_zoQcqWMTpJynE-/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" }
+    ]
+  }
+    ],
     "points": [
       {
         "name": "N2",
         "lat": 12.50515,
         "lon": 109.266361
+      },
+      {
+        "name": "Vịnh Vân Phong",
+        "lat": 12.605000000000002,
+        "lon": 109.2688888888889
+
       },
       {
         "name": "N1",
@@ -353,7 +367,7 @@
     ]
   },
   {
-    "region": "Tọa độ thu mẫu mước va thủy sinh khu vực biển Cà Mau",
+    "region": "Cà Mau",
     "region_id": "tọa_độ_thu_mẫu_mước_va_thủy_sinh_khu_vực_biển_cà_mau",
     "year": 2018,
     "representative": {
@@ -366,7 +380,8 @@
         "group_name": "Cà Mau",
         "files": [
           { "name": "Báo cáo ĐVN của Khánh Hội_ Ca Mau 2.2014.doc", "url": "https://docs.google.com/document/d/1Iz4JPF5HolJqASqFC4SdKW5MEH6mbaZ_/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" },
-          { "name": "TPL DVN khu vuc Ca Mau", "url": "https://docs.google.com/spreadsheets/d/1ANfPCmKt5Fyst7BH3nq36-8fa40_tFT1/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" }
+          { "name": "TPL DVN khu vuc Ca Mau", "url": "https://docs.google.com/spreadsheets/d/1ANfPCmKt5Fyst7BH3nq36-8fa40_tFT1/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" },
+          { "name": "2. BC TONG HOP KBTB CA MAU (11.8.2022)-SauhopTN.pdf", "url": "https://drive.google.com/file/d/1aG9hvQk94gxkJD14mpYemBHlMU7-7Vi7/view?usp=drive_link" }
         ]
       }
     ],
@@ -1159,7 +1174,7 @@
     ]
   },
   {
-    "region": "Ven biển Cần Giờ 2013 - 2016",
+    "region": "Ven biển Cần Giờ",
     "region_id": "ven_bien_can_gio_2013_2016",
     "year": 2013,
     "representative": {
@@ -1259,7 +1274,7 @@
     ]
   },
   {
-    "region": "Tọa độ Tây Nam Bộ 2012-2015",
+    "region": "Tây Nam Bộ",
     "region_id": "toa_do_tay_nam_bo_20132015",
     "year": 2012,
     "representative": {
@@ -1291,6 +1306,106 @@
       }
     ],
     "points": [
+      {
+        "name": "N1",
+        "lat": 10.03124958701758,
+        "lon": 105.280287044049
+      },
+      {
+        "name": "N2",
+        "lat": 9.932603007168817,
+        "lon": 105.2069012113024
+      },
+      {
+        "name": "N3",
+        "lat": 9.871069572854775,
+        "lon": 105.1256649970644
+      },
+      {
+        "name": "N4",
+        "lat": 9.817968325732844,
+        "lon": 105.1446840617025
+      },
+      {
+        "name": "N5",
+        "lat": 9.752438412514906,
+        "lon": 105.0067110088936
+      },
+      {
+        "name": "N6",
+        "lat": 9.60015,
+        "lon": 104.94899
+      },
+      {
+        "name": "N7",
+        "lat": 9.40254,
+        "lon": 104.97039
+      },
+      {
+        "name": "N8",
+        "lat": 9.34086,
+        "lon": 105.09122
+      },
+      {
+        "name": "N9",
+        "lat": 9.13821,
+        "lon": 104.91878
+      },
+      {
+        "name": "N10",
+        "lat": 9.23765,
+        "lon": 105.07486
+      },
+      {
+        "name": "N11",
+        "lat": 9.2452,
+        "lon": 105.25989
+      },
+      {
+        "name": "N12",
+        "lat": 9.469453365869175,
+        "lon": 105.2337429145865
+      },
+      {
+        "name": "N13",
+        "lat": 9.55987,
+        "lon": 105.22212
+      },
+      {
+        "name": "N14",
+        "lat": 9.672314245907035,
+        "lon": 105.1268113193358
+      },
+      {
+        "name": "N15",
+        "lat": 9.73859046140286,
+        "lon": 105.182922471862
+      },
+      {
+        "name": "N16",
+        "lat": 9.8393,
+        "lon": 105.24226
+      },
+      {
+        "name": "N17",
+        "lat": 9.9035,
+        "lon": 105.33163
+      },
+      {
+        "name": "N18",
+        "lat": 9.74238,
+        "lon": 105.3996
+      },
+      {
+        "name": "N19",
+        "lat": 9.6291,
+        "lon": 105.30142
+      },
+      {
+        "name": "N20",
+        "lat": 9.452294546384483,
+        "lon": 105.4497848412917
+      },
       {
         "name": "TNB-SW-01",
         "lat": 10.95527777777778,
@@ -2532,6 +2647,24 @@
     ]
   },
   {
+    "region": "Đảo Bạch Long Vĩ",
+    "region_id": "bach_long_vi",
+    "year": 2010,
+    "representative":{
+      "name": "BLV",
+      "lat": 20.135277777777777,
+      "lon": 107.73861111111111
+    },
+    "links":[
+      {
+        "group_name": "Đảo Bạch Long Vĩ",
+        "file": [
+          {"name": "Bao cao san ho Bach Long Vy 2010-1.doc", "url": "https://docs.google.com/document/d/1w89QIsEp0BC7B4pFghJeZlpf9cHqQmGT/edit?usp=sharing&ouid=109449811292073449358&rtpof=true&sd=true"}
+        ]
+      }
+    ]
+  },
+  {
     "region": "Phú Quốc",
     "region_id": "phu_quoc",
     "year": 2018,
@@ -2546,7 +2679,8 @@
   "files": [
     { "name": "Mô hình ngân hàng ghẹ ở phú quốc.doc", "url": "https://docs.google.com/document/d/1Joj_an-DdeNWDoqP6YodRdEKLOb8p4mp/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true"},
     { "name": "TPL DVN o Phu Quoc 11.2016.xls", "url": "https://docs.google.com/spreadsheets/d/1MG6FAZ_jCF6kFLFmacs9PcS1pN4xCOEQ/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true"},
-    { "name": "TPL DVN ven bien Phu Quoc 3.2017.xls", "url": "https://docs.google.com/spreadsheets/d/1Lp4qHXtm0zLuVDkSA53ZNu8iTGEM8Uvu/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true"}
+    { "name": "TPL DVN ven bien Phu Quoc 3.2017.xls", "url": "https://docs.google.com/spreadsheets/d/1Lp4qHXtm0zLuVDkSA53ZNu8iTGEM8Uvu/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true"},
+    { "name": "KHU VUC DAO- PHU QUOC.doc", "url": "https://docs.google.com/document/d/1W_JHU_x59OW03Y5TdFAg4I1B8PYHgkYe/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true"}
    ]
   }
  ],
@@ -3155,7 +3289,8 @@
           { "name": "TPL Zooplankton STV Mm 2013.xls", "url": "https://docs.google.com/spreadsheets/d/10Lfy4k-pEuEhkI-uvxLnjYywglJgBGyp/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" },
           { "name": "Zooplankton HTA MM 2012.xlsx", "url": "https://docs.google.com/spreadsheets/d/19oj2O249rSNmMcV0QVF8Bgdqx3pICh6p/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" },
           { "name": "Zooplankton SDN MM 2012.xlsx", "url": "https://docs.google.com/spreadsheets/d/17oQ9ywoYk45hi02j5VojusjFrZSWwjs6/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" },
-          { "name": "Zooplankton STV MM 2012.xlsx", "url": "https://docs.google.com/spreadsheets/d/1A2v4uGdEjBzW8m-xnbenIQc51W-ryMph/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" }
+          { "name": "Zooplankton STV MM 2012.xlsx", "url": "https://docs.google.com/spreadsheets/d/1A2v4uGdEjBzW8m-xnbenIQc51W-ryMph/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" },
+          { "name": "KHU VUC CS- DONG NAI.doc", "url": "https://docs.google.com/document/d/16eR8tFoxYhVZsJosSPqZIuqulJfESEa7/edit?usp=drive_link&ouid=109449811292073449358&rtpof=true&sd=true" }
         ]
       }
     ],
@@ -3294,118 +3429,6 @@
         "name": "Hợp lưu suối Cả và sông Thị Vải",
         "lat": 10.70861111111111,
         "lon": 106.9752777777778
-      }
-    ]
-  },
-  {
-    "region": "Mẫu nước miền Tây Nam Bộ",
-    "region_id": "tọa_độ_thu_mẫu_nước_kênh_20",
-    "year": 2020,
-    "representative": {
-      "name": "N1",
-      "lat": 10.03124958701758,
-      "lon": 105.280287044049
-    },
-    "points": [
-      {
-        "name": "N1",
-        "lat": 10.03124958701758,
-        "lon": 105.280287044049
-      },
-      {
-        "name": "N2",
-        "lat": 9.932603007168817,
-        "lon": 105.2069012113024
-      },
-      {
-        "name": "N3",
-        "lat": 9.871069572854775,
-        "lon": 105.1256649970644
-      },
-      {
-        "name": "N4",
-        "lat": 9.817968325732844,
-        "lon": 105.1446840617025
-      },
-      {
-        "name": "N5",
-        "lat": 9.752438412514906,
-        "lon": 105.0067110088936
-      },
-      {
-        "name": "N6",
-        "lat": 9.60015,
-        "lon": 104.94899
-      },
-      {
-        "name": "N7",
-        "lat": 9.40254,
-        "lon": 104.97039
-      },
-      {
-        "name": "N8",
-        "lat": 9.34086,
-        "lon": 105.09122
-      },
-      {
-        "name": "N9",
-        "lat": 9.13821,
-        "lon": 104.91878
-      },
-      {
-        "name": "N10",
-        "lat": 9.23765,
-        "lon": 105.07486
-      },
-      {
-        "name": "N11",
-        "lat": 9.2452,
-        "lon": 105.25989
-      },
-      {
-        "name": "N12",
-        "lat": 9.469453365869175,
-        "lon": 105.2337429145865
-      },
-      {
-        "name": "N13",
-        "lat": 9.55987,
-        "lon": 105.22212
-      },
-      {
-        "name": "N14",
-        "lat": 9.672314245907035,
-        "lon": 105.1268113193358
-      },
-      {
-        "name": "N15",
-        "lat": 9.73859046140286,
-        "lon": 105.182922471862
-      },
-      {
-        "name": "N16",
-        "lat": 9.8393,
-        "lon": 105.24226
-      },
-      {
-        "name": "N17",
-        "lat": 9.9035,
-        "lon": 105.33163
-      },
-      {
-        "name": "N18",
-        "lat": 9.74238,
-        "lon": 105.3996
-      },
-      {
-        "name": "N19",
-        "lat": 9.6291,
-        "lon": 105.30142
-      },
-      {
-        "name": "N20",
-        "lat": 9.452294546384483,
-        "lon": 105.4497848412917
       }
     ]
   }
