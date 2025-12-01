@@ -5,7 +5,7 @@ on:
     paths:
       - "dulie.xlsx"
       - "filechuyen.py"
-      - "build.yml"
+      - ".github/workflows/build.yml"
 
 jobs:
   build:
