@@ -247,8 +247,27 @@
 Promise.all([
   fetch("data_nghiencuu.json").then(r => r.json()),
   fetch("data_nghiencuu_new.json").then(r => r.json())
-]).then(([oldData, newData]) => {
-  const data = [...oldData, ...newData];
+])
+.then(([oldData, newData]) => {
+
+  const data = [
+    ...(Array.isArray(oldData) ? oldData : []),
+    ...(Array.isArray(newData) ? newData : [])
+  ];
+
+  console.log("📌 Tổng số vùng tải được:", data.length);
+
+  // 👉 Mọi phần xử lý dữ liệu của bạn nằm dưới đây là hợp lý và giữ nguyên
+  data.forEach(region => {
+    // ... toàn bộ code hiện tại như bạn gửi ...
+  });
+
+})
+.catch(err => {
+  console.error("❌ Lỗi tải JSON:", err);
+  alert("Không thể tải dữ liệu JSON.");
+});
+
 
       data.forEach(region => {
         const { region: name, year, links, representative, points } = region;
