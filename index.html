@@ -9,16 +9,16 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <style>
-    body, html { margin:0; padding:0; height:100%; overflow:hidden }
-    #map { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1 }
+    body, html { margin:0; padding:0; height:100%; overflow:auto }
+    #map { width:100%; height:100vh; z-index:1 }
     #sidebar {
-      position:fixed; top:0; left:0; width:300px; height:100%;
+      position:absolute; top:0; left:0; width:300px; height:100%;
       background:#f8f9fa; border-right:1px solid #ccc;
       padding:15px; overflow-y:auto; transition:.3s; z-index:1002;
     }
     #sidebar.collapsed { transform:translateX(-100%) }
     #toggleSidebar {
-      position:fixed; top:20px; left:10px; width:32px; height:32px;
+      position:absolute; top:20px; left:10px; width:32px; height:32px;
       background:#0d6efd; color:white; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
       cursor:pointer; user-select:none; transition:.3s; z-index:1100;
@@ -27,7 +27,7 @@
     .popup-title { font-weight:bold; color:#1a237e }
     .file-group-title { background:#eef3ff; cursor:pointer; padding:4px 6px; border-radius:6px }
     #subPopup {
-      position:fixed; bottom:20px; right:20px; width:340px; display:none;
+      position:absolute; bottom:20px; right:20px; width:340px; display:none;
       max-height:300px; overflow:auto; background:#fff;
       border:1px solid #ddd; border-radius:10px; padding:10px;
       box-shadow:0 6px 18px rgba(0,0,0,0.18); z-index:99999;
