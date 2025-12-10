@@ -5,139 +5,315 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bản đồ nghiên cứu sinh vật biển</title>
 
+  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <style>
-    body, html { margin:0; padding:0; height:100%; overflow:auto }
-    #map { width:100%; height:100vh; z-index:1 }
+    html, body {
+      margin:0;
+      padding:0;
+      height:100%;
+      overflow:auto;
+      font-family: Arial, sans-serif;
+    }
+
+    .page-wrapper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    /* MAP responsive */
+    #map {
+      width: 100%;
+      height: 100vh;
+      min-height: 330px;
+    }
+
+    /* SIDEBAR */
     #sidebar {
-      position:absolute; top:0; left:0; width:300px; height:100%;
-      background:#f8f9fa; border-right:1px solid #ccc;
-      padding:15px; overflow-y:auto; transition:.3s; z-index:1002;
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 300px;
+      max-width: calc(100% - 24px);
+      max-height: 65vh;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      padding: 12px;
+      overflow-y: auto;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      transition: transform .3s ease;
+      z-index: 20;
     }
-    #sidebar.collapsed { transform:translateX(-100%) }
+
+    #sidebar.collapsed {
+      transform: translateX(-120%);
+    }
+
     #toggleSidebar {
-      position:absolute; top:20px; left:10px; width:32px; height:32px;
-      background:#0d6efd; color:white; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; user-select:none; transition:.3s; z-index:1100;
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #0d6efd;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      font-size: 20px;
     }
-    .region-item { margin-bottom:10px; border-bottom:1px solid #ddd; padding-bottom:5px }
-    .popup-title { font-weight:bold; color:#1a237e }
-    .file-group-title { background:#eef3ff; cursor:pointer; padding:4px 6px; border-radius:6px }
+
+    @media (max-width: 520px){
+      #sidebar {
+        width: 88%;
+        max-height: 52vh;
+      }
+    }
+
+    .region-item {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 6px;
+    }
+
+    .file-group-title {
+      background: #e8eeff;
+      padding: 6px;
+      border-radius: 6px;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+
+    /* Popup phía dưới */
     #subPopup {
-      position:absolute; bottom:20px; right:20px; width:340px; display:none;
-      max-height:300px; overflow:auto; background:#fff;
-      border:1px solid #ddd; border-radius:10px; padding:10px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.18); z-index:99999;
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      width: 320px;
+      max-width: calc(100% - 36px);
+      background: white;
+      border:1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+      display:none;
+      max-height: 46vh;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    #subPopup .closeSub {
+      float:right;
+      border:none;
+      background:none;
+      font-size: 20px;
+      cursor:pointer;
     }
   </style>
 </head>
 <body>
 
-<div id="sidebar" class="collapsed">
-  <h2>Vùng nghiên cứu</h2>
-  <div id="regionList"></div>
+<div class="page-wrapper">
+
+  <div id="map"></div>
+
+  <div id="sidebar" class="collapsed">
+    <h3 style="margin-top:0">Vùng nghiên cứu</h3>
+    <div id="regionList"></div>
+  </div>
+
+  <div id="toggleSidebar">›</div>
+
+  <div id="subPopup"></div>
+
 </div>
-<div id="toggleSidebar">›</div>
-<div id="map"></div>
-<div id="subPopup"></div>
 
 <script>
-  const map = L.map("map").setView([16.0471,108.2068], 6);
-  map.zoomControl.setPosition("topright");
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+/* ========================
+    ICON FILE DỰA THEO ĐUÔI
+========================= */
+function getFileIcon(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
 
-  const sidebar=document.getElementById("sidebar"), btn=document.getElementById("toggleSidebar");
-  btn.onclick=()=>{
-    sidebar.classList.toggle("collapsed");
-    const hide=sidebar.classList.contains("collapsed");
-    btn.innerHTML=hide?"›":"‹";
-    btn.style.left=hide?"10px":"280px";
-    setTimeout(()=>map.invalidateSize(),400);
+  const icons = {
+    pdf: "📕",
+    doc: "📘", docx: "📘",
+    xls: "📗", xlsx: "📗",
+    ppt: "📙", pptx: "📙",
+    jpg: "🖼️", jpeg: "🖼️", png: "🖼️", gif: "🖼️",
+    mp4: "🎬", mov: "🎬", avi: "🎬",
+    mp3: "🎵", wav: "🎵",
+    zip: "🗂️", rar: "🗂️",
+    txt: "📄"
   };
 
-  const popupOverlay=document.getElementById("subPopup");
-  function showSubPopup(region,title,files){
-    popupOverlay.innerHTML=`<button onclick='hideSub()'>←</button><b>${region} — ${title}</b><br>${files}`;
-    popupOverlay.style.display="block";
-  }
-  function hideSub(){ popupOverlay.style.display="none"; }
+  return icons[ext] || "📄";
+}
 
-  const regionMarkers={}, mainMarkers={};
-  const regionList=document.getElementById("regionList");
+/* ========================
+    MAP INIT
+========================= */
+const map = L.map("map").setView([16.0471,108.2068], 6);
+map.zoomControl.setPosition("topright");
 
-  Promise.all([
-    fetch("dulieu1.json").then(r=>r.json()),
-    fetch("dulieu2.json").then(r=>r.json())
-  ])
-  .then(([oldData,newData])=>{
-    const data=[...(oldData||[]),...(newData||[])];
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-    data.forEach(region=>{
-      const {region:name,year,links,representative,points}=region;
-      const color="#"+Math.floor(Math.random()*16777215).toString(16);
+/* ========================
+    SIDEBAR
+========================= */
+const sidebar = document.getElementById("sidebar");
+const btn = document.getElementById("toggleSidebar");
+btn.onclick = () => {
+  const collapsed = sidebar.classList.toggle("collapsed");
+  btn.innerHTML = collapsed ? "›" : "‹";
+  setTimeout(() => map.invalidateSize(), 350);
+};
 
-      const centerMarker=L.marker([representative.lat,representative.lon],{
-        icon:L.divIcon({
-          html:`<svg viewBox="0 0 24 24" fill="${color}" width="32" height="32"><path d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>`,
-          className: "custom-marker",
-          iconSize: [32, 32],
-          iconAnchor: [16, 32],
-          popupAnchor: [0, -28]
-        })
-      }).addTo(map);
+/* ========================
+    POPUP FILE
+========================= */
+const subPopup = document.getElementById("subPopup");
 
-      mainMarkers[name]=centerMarker;
+function showSubPopup(region, title, filesHtml) {
+  subPopup.innerHTML =
+    `<button class="closeSub" onclick="hideSub()">✕</button>
+     <b>${region} — ${title}</b><br><br>${filesHtml}`;
+  subPopup.style.display = "block";
+}
+function hideSub() { subPopup.style.display = "none"; }
 
-      const linksHTML=(links||[]).map((g,i)=>`
-        <div class="file-group-title" data-i="${i}">📘 ${g.group_name}</div>`).join("")||"<i>Không có tài liệu</i>";
+/* ========================
+    LOAD JSON DATA
+========================= */
+const regionList = document.getElementById("regionList");
+const regionMarkers = {};
+const mainMarkers = {};
 
-      centerMarker.bindPopup(`
-        <div class="popup-title" style="color:${color}">${name}</div>
-        <div>Năm: ${year??"Không rõ"}</div>${linksHTML}
-      `);
+Promise.all([
+  fetch("dulieu1.json").then(r => r.json()),
+  fetch("dulieu2.json").then(r => r.json())
+])
+.then(([d1, d2]) => {
+  const data = [...d1, ...d2];
 
-      centerMarker.on("popupopen",e=>{
-        const el=e.popup.getElement();
-        el.querySelectorAll(".file-group-title").forEach(div=>{
-          div.onclick=()=>{
-            const g=links[div.dataset.i];
-            const files=g.files.map(f=>`<div><a href="${f.url}" target="_blank">${f.name}</a></div>`).join("");
-            showSubPopup(name,g.group_name,files);
-          };
-        });
+  data.forEach(region => {
+    const name = region.region;
+    const year = region.year;
+    const links = region.links || [];
+    const rep = region.representative;
+
+    // Color stable theo tên
+    function genColor(str){
+      let h = 0; for (let i=0;i<str.length;i++){
+        h = str.charCodeAt(i) + ((h<<5)-h);
+      }
+      return "#" + ("00000"+(h & 0xFFFFFF).toString(16)).slice(-6);
+    }
+    const color = genColor(name);
+
+    /* Center marker */
+    const centerMarker = L.marker([rep.lat, rep.lon], {
+      icon: L.divIcon({
+        html:`<svg viewBox="0 0 24 24" fill="${color}" width="32" height="32">
+                <path d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5
+                         c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+              </svg>`,
+        className:"custom-marker",
+        iconSize:[32,32],
+        iconAnchor:[16,32],
+        popupAnchor:[0,-28]
+      })
+    }).addTo(map);
+
+    mainMarkers[name] = centerMarker;
+
+    /* Popup nhóm tài liệu */
+    const linksHTML = links.length
+      ? links.map((g,i)=> `<div class="file-group-title" data-i="${i}">📁 ${g.group_name}</div>`).join("")
+      : "<i>Không có tài liệu</i>";
+
+    centerMarker.bindPopup(`
+      <div style="font-weight:bold;color:${color}">${name}</div>
+      <div>Năm: ${year}</div>
+      ${linksHTML}
+    `);
+
+    /* Khi mở popup */
+    centerMarker.on("popupopen", e => {
+      const el = e.popup.getElement();
+      el.querySelectorAll(".file-group-title").forEach(div => {
+        div.onclick = () => {
+          const group = links[div.dataset.i];
+          const files = group.files.map(f => {
+            const icon = getFileIcon(f.name);
+            return `
+              <div style="margin:4px 0">
+                ${icon} 
+                <a href="${f.url}" target="_blank">${f.name}</a>
+              </div>`;
+          }).join("");
+
+          showSubPopup(name, group.group_name, files);
+        };
       });
-
-      regionMarkers[name]=(points||[]).map(p=>
-        L.circleMarker([p.lat,p.lon],{radius:5,color,fillColor:color,fillOpacity:.85})
-        .bindPopup(p.name)
-      );
-
-      const div=document.createElement("div");
-      div.className="region-item";
-      div.innerHTML=`<input type="checkbox" data-r="${name}"> <b style="color:${color}">${name}</b> (${year})`;
-      regionList.appendChild(div);
     });
 
-    regionList.onchange=e=>{
-      const name=e.target.dataset.r;
-      if(!name) return;
-      const subs=regionMarkers[name]||[];
-      const marker=mainMarkers[name];
+    /* Điểm con */
+    regionMarkers[name] = (region.points || []).map(p =>
+      L.circleMarker([p.lat, p.lon], {
+        radius: 5,
+        color,
+        fillColor: color,
+        fillOpacity: .85
+      }).bindPopup(p.name)
+    );
 
-      if(e.target.checked){
-        subs.forEach(m=>m.addTo(map));
-        marker.openPopup();
-      } else {
-        subs.forEach(m=>map.removeLayer(m));
-        marker.closePopup();
-        hideSub();
-      }
-    };
-  })
-  .catch(()=>alert("Lỗi tải JSON"));
+    /* Danh sách bên trái */
+    const div = document.createElement("div");
+    div.className = "region-item";
+    div.innerHTML =
+      `<label>
+         <input type="checkbox" data-r="${name}">
+         <b style="color:${color}">${name}</b> (${year})
+       </label>`;
+    regionList.appendChild(div);
+  });
+
+  /* Tương tác checkbox */
+  regionList.onchange = e => {
+    const name = e.target.dataset.r;
+    if (!name) return;
+
+    const subs = regionMarkers[name] || [];
+    const marker = mainMarkers[name];
+
+    if (e.target.checked) {
+      subs.forEach(m => m.addTo(map));
+      marker.openPopup();
+      setTimeout(()=>map.invalidateSize(), 200);
+    } else {
+      subs.forEach(m => map.removeLayer(m));
+      marker.closePopup();
+      hideSub();
+    }
+  };
+});
+
+/* ========================
+    MAP FIX FOR MOBILE
+========================= */
+setTimeout(()=>map.invalidateSize(), 500);
+window.addEventListener("resize", ()=> map.invalidateSize());
+window.addEventListener("orientationchange", ()=> setTimeout(()=>map.invalidateSize(),300));
 </script>
+
 </body>
 </html>
